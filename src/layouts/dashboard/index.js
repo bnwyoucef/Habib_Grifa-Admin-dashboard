@@ -10,18 +10,48 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
 import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
+import DefaultLineChart from "examples/Charts/LineCharts/DefaultLineChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
 
 // Data
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 
-// Dashboard components
-import Projects from "layouts/dashboard/components/Projects";
-import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
+import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { selectAllOrders, fetchOrders } from "../../features/order/orderSlice";
 
 function Dashboard() {
-  const { sales, tasks } = reportsLineChartData;
+  const { sales } = reportsLineChartData;
+  let today = new Date();
+  const ddBefore = String(today.getDate() - 1).padStart(2, "0");
+  const dd = String(today.getDate()).padStart(2, "0");
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const time = String(today.getHours()).concat(":").concat(today.getMinutes());
+  const yyyy = String(today.getFullYear());
+
+  today = yyyy.concat("-".concat(mm.concat("-").concat(dd)));
+  const yesterday = yyyy.concat("-".concat(mm.concat("-").concat(ddBefore)));
+
+  const dispatch = useDispatch();
+  const orders = useSelector(selectAllOrders);
+  const orderStatus = useSelector((state) => state.order.status);
+  const [countDay, setCountDay] = useState(0);
+  const [countDayBefore, setCountDayBefore] = useState(0);
+
+  useEffect(() => {
+    if (orderStatus === "idle") {
+      dispatch(fetchOrders());
+    }
+  }, [orderStatus, dispatch]);
+  useEffect(() => {
+    const orderDay = orders.filter((order) => order.createdAt.substring(0, 10) === today).length;
+    const orderDayBefore = orders.filter(
+      (order) => order.createdAt.substring(0, 10) === yesterday
+    ).length;
+    setCountDay(orderDay);
+    setCountDayBefore(orderDay - orderDayBefore);
+  }, [orders]);
 
   return (
     <DashboardLayout>
@@ -31,14 +61,14 @@ function Dashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                color="dark"
-                icon="weekend"
-                title="Bookings"
-                count={281}
+                color="success"
+                icon="today"
+                title="Commandes/jour"
+                count={countDay}
                 percentage={{
-                  color: "success",
-                  amount: "+55%",
-                  label: "than lask week",
+                  color: countDayBefore > 0 ? "success" : "error",
+                  amount: countDayBefore > 0 ? "+".concat(countDayBefore) : String(countDayBefore),
+                  label: "que le dernier jour",
                 }}
               />
             </MDBox>
@@ -46,13 +76,17 @@ function Dashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                icon="leaderboard"
-                title="Today's Users"
-                count="2,300"
+                icon="calendar_month"
+                title="Commande/mois"
+                count={
+                  orders.filter(
+                    (order) => order.createdAt.substring(0, 7) === today.substring(0, 7)
+                  ).length
+                }
                 percentage={{
                   color: "success",
                   amount: "+3%",
-                  label: "than last month",
+                  label: "que le mois dernier",
                 }}
               />
             </MDBox>
@@ -60,14 +94,14 @@ function Dashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                color="success"
-                icon="store"
-                title="Revenue"
+                color="dark"
+                icon="paid"
+                title="Revenue/jour"
                 count="34k"
                 percentage={{
                   color: "success",
                   amount: "+1%",
-                  label: "than yesterday",
+                  label: "que le dernier jour",
                 }}
               />
             </MDBox>
@@ -76,8 +110,8 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="primary"
-                icon="person_add"
-                title="Followers"
+                icon="query_stats"
+                title="Revenue/mois"
                 count="+91"
                 percentage={{
                   color: "success",
@@ -90,52 +124,61 @@ function Dashboard() {
         </Grid>
         <MDBox mt={4.5}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsBarChart
-                  color="info"
-                  title="website views"
-                  description="Last Campaign Performance"
-                  date="campaign sent 2 days ago"
-                  chart={reportsBarChartData}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={12} md={6} lg={6}>
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="success"
-                  title="daily sales"
-                  description={
-                    <>
-                      (<strong>+15%</strong>) increase in today sales.
-                    </>
-                  }
-                  date="updated 4 min ago"
+                  title="Nombre de commandes par jour"
+                  description={today}
+                  date={time}
                   chart={sales}
                 />
               </MDBox>
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={12} md={6} lg={6}>
               <MDBox mb={3}>
-                <ReportsLineChart
-                  color="dark"
-                  title="completed tasks"
-                  description="Last Campaign Performance"
-                  date="just updated"
-                  chart={tasks}
+                <ReportsBarChart
+                  color="info"
+                  title="nombre de commandes par semaine"
+                  description={today}
+                  date={time}
+                  chart={reportsBarChartData}
                 />
               </MDBox>
             </Grid>
-          </Grid>
-        </MDBox>
-        <MDBox>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={8}>
-              <Projects />
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <OrdersOverview />
+            <Grid item xs={12} md={12} lg={12}>
+              <MDBox mb={3}>
+                <DefaultLineChart
+                  icon={{ color: "info", component: "leaderboard" }}
+                  title="Commandes Annuelles"
+                  description="Nombre de demandes par mois"
+                  chart={{
+                    labels: [
+                      "Jan",
+                      "fév",
+                      "Mar",
+                      "Avr",
+                      "Mai",
+                      "Jui",
+                      "Juil",
+                      "Août",
+                      "Sep",
+                      "Oct",
+                      "Nov",
+                      "Dec",
+                    ],
+                    datasets: [
+                      {
+                        label: "nombre de commandes",
+                        color: "info",
+                        data: [
+                          500, 400, 3000, 2200, 5000, 2500, 4000, 2300, 5000, 3200, 3400, 1200,
+                        ],
+                      },
+                    ],
+                  }}
+                />
+              </MDBox>
             </Grid>
           </Grid>
         </MDBox>
