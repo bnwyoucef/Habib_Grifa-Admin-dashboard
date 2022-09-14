@@ -1,7 +1,7 @@
 export default {
   sales: {
     labels: ["08", "10", "12", "14", "16", "18", "20", "22", "00"],
-    datasets: { label: "Mobile apps", data: [50, 40, 300, 320, 500, 350, 200, 230, 500] },
+    datasets: { label: "Mobile apps", data: [] },
   },
   tasks: {
     labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],

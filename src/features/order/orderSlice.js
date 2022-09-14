@@ -9,7 +9,7 @@ const initialState = {
 
 export const fetchOrders = createAsyncThunk("order/fetchOrders", async () => {
   const response = await axios.get("order/orders");
-
+  console.log(response.data);
   return response.data;
 });
 
