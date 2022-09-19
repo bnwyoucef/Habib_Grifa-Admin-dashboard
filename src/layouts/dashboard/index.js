@@ -9,19 +9,14 @@ import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
 import DefaultLineChart from "examples/Charts/LineCharts/DefaultLineChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
 
-// Data
-import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
-// Data import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
-
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectAllOrders, fetchOrders } from "../../features/order/orderSlice";
 
 function Dashboard() {
-  // Data const { sales } = reportsLineChartData;
   const [salesDayTime, setSalesDayTime] = useState({
     labels: ["08", "10", "12", "14", "16", "18", "20", "22", "00"],
-    datasets: { label: "Mobile apps", data: [] },
+    datasets: { label: "commandes", data: [] },
   });
   const [yearData, setYearData] = useState([]);
 
@@ -103,7 +98,7 @@ function Dashboard() {
     data.push(filterOrderByTime(orderDay, 0, 11, 13));
     const salesData = {
       labels: ["08", "10", "12", "14", "16", "18", "20", "22", "00"],
-      datasets: { label: "Mobile apps", data },
+      datasets: { label: "commandes", data },
     };
     setSalesDayTime(salesData);
     data = [];
@@ -207,10 +202,26 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsBarChart
                   color="info"
-                  title="nombre de commandes par semaine"
+                  title="nombre de commandes par mois"
                   description={today}
                   date={time}
-                  chart={reportsBarChartData}
+                  chart={{
+                    labels: [
+                      "Jan",
+                      "fév",
+                      "Mar",
+                      "Avr",
+                      "Mai",
+                      "Jui",
+                      "Juil",
+                      "Août",
+                      "Sep",
+                      "Oct",
+                      "Nov",
+                      "Dec",
+                    ],
+                    datasets: { label: "commandes", data: yearData },
+                  }}
                 />
               </MDBox>
             </Grid>
@@ -219,7 +230,7 @@ function Dashboard() {
                 <DefaultLineChart
                   icon={{ color: "info", component: "leaderboard" }}
                   title="Commandes Annuelles"
-                  description="Nombre de demandes par mois"
+                  description="Nombre de commandes par anne"
                   chart={{
                     labels: [
                       "Jan",
