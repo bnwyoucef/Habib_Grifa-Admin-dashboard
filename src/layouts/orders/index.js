@@ -13,10 +13,11 @@ import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 
 // Data
-import authorsTableData from "layouts/orders/data/authorsTableData";
+import nonConfirmedOrdersData from "layouts/orders/data/authorsTableData";
+import MDButton from "components/MDButton";
 
 function Tables() {
-  const { columns, rows } = authorsTableData();
+  const { columns, rows, columns2, rows2 } = nonConfirmedOrdersData("confirmed");
 
   return (
     <DashboardLayout>
@@ -31,17 +32,54 @@ function Tables() {
                 py={3}
                 px={2}
                 variant="gradient"
-                bgColor="info"
+                bgColor="success"
                 borderRadius="lg"
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Commandes
+                  Nouvelles commandes
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
-                  table={{ columns, rows }}
+                  table={{
+                    columns,
+                    rows,
+                  }}
+                  isSorted={false}
+                  entriesPerPage={false}
+                  showTotalEntries={false}
+                  noEndBorder
+                />
+              </MDBox>
+            </Card>
+          </Grid>
+          <Grid item xs={12}>
+            <Card>
+              <MDBox
+                mx={2}
+                mt={-3}
+                py={3}
+                px={2}
+                variant="gradient"
+                bgColor="success"
+                borderRadius="lg"
+                coloredShadow="info"
+                style={{ display: "flex" }}
+              >
+                <MDTypography variant="h6" color="white" style={{ flex: 1 }}>
+                  Commandes confirmées
+                </MDTypography>
+                <MDButton variant="contained" color="info">
+                  Imprimer
+                </MDButton>
+              </MDBox>
+              <MDBox pt={3}>
+                <DataTable
+                  table={{
+                    columns: columns2,
+                    rows: rows2,
+                  }}
                   isSorted={false}
                   entriesPerPage={false}
                   showTotalEntries={false}
