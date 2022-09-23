@@ -13,6 +13,19 @@ export const fetchOrders = createAsyncThunk("order/fetchOrders", async () => {
   return response.data;
 });
 
+export const removeOrder = createAsyncThunk("order/removeOrder", async (orderId) => {
+  const response = await axios.delete(`order/delete/${orderId}`);
+  console.log(response.data);
+  return response.data;
+});
+
+export const confirmOrder = createAsyncThunk("order/confirmOrder", async (orderId) => {
+  console.log("confirm order", orderId);
+  const response = await axios.patch(`order/update/${orderId}`);
+  console.log(response.data);
+  return response.data;
+});
+
 export const orderSlice = createSlice({
   name: "order",
   initialState,
@@ -28,6 +41,31 @@ export const orderSlice = createSlice({
         state.orders = state.orders.concat(action.payload);
       })
       .addCase(fetchOrders.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(removeOrder.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(removeOrder.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        // Add any fetched posts to the array
+        state.orders = state.orders.filter((order) => order.id !== action.payload.id);
+      })
+      .addCase(removeOrder.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(confirmOrder.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(confirmOrder.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.orders = state.orders.map((order) =>
+          order.id === action.payload.id ? action.payload : order
+        );
+      })
+      .addCase(confirmOrder.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       });

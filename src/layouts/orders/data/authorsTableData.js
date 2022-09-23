@@ -7,24 +7,44 @@ import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 import Icon from "@mui/material/Icon";
+import toast, { Toaster } from "react-hot-toast";
 
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { selectAllOrders, fetchOrders } from "../../../features/order/orderSlice";
+import {
+  selectAllOrders,
+  fetchOrders,
+  removeOrder,
+  confirmOrder,
+} from "../../../features/order/orderSlice";
 
 export default function data() {
   const imageConstLink = "http://localhost:1811/order";
   const ordersList = useSelector(selectAllOrders);
   const dispatch = useDispatch();
   const orderStatus = useSelector((state) => state.order.status);
+
   useEffect(() => {
     if (orderStatus === "idle") {
       dispatch(fetchOrders());
     }
   }, [orderStatus, dispatch]);
 
+  function removeConfirmedOrder(event, orderId) {
+    event.preventDefault();
+    dispatch(removeOrder(String(orderId)));
+    toast.success("commande supprimer avec succes");
+  }
+
+  function confirmNewOrder(event, orderId) {
+    event.preventDefault();
+    dispatch(confirmOrder(String(orderId)));
+    toast.success("commande confirmer avec succes");
+  }
+
   const Produit = ({ image, name, description }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
+      <Toaster />
       <MDAvatar
         src={image}
         name={name}
@@ -104,7 +124,12 @@ export default function data() {
           />
         ),
         confirmé: (
-          <MDButton variant="outlined" size="small" color="info">
+          <MDButton
+            variant="outlined"
+            size="small"
+            color="info"
+            onClick={(e) => confirmNewOrder(e, order.id)}
+          >
             confirme
           </MDButton>
         ),
@@ -171,7 +196,12 @@ export default function data() {
           />
         ),
         remove: (
-          <MDButton variant="text" size="large" color="info">
+          <MDButton
+            variant="text"
+            size="large"
+            color="info"
+            onClick={(e) => removeConfirmedOrder(e, order.id)}
+          >
             <Icon>delete</Icon>
           </MDButton>
         ),
