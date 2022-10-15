@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -15,6 +15,11 @@ import MDSnackbar from "components/MDSnackbar";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
+import MDInput from "components/MDInput";
+import ProfilesList from "examples/Lists/ProfilesList";
+//  redux tools
+import { useSelector, useDispatch } from "react-redux";
+import { selectAllCategories, fetchCategories } from "../../features/category/categorySlice";
 
 function Notifications() {
   const [successSB, setSuccessSB] = useState(false);
@@ -95,81 +100,54 @@ function Notifications() {
     />
   );
 
+  const dispatch = useDispatch();
+  const categories = useSelector(selectAllCategories);
+  const categStatus = useSelector((state) => state.category.status);
+
+  useEffect(() => {
+    if (categStatus === "idle") dispatch(fetchCategories());
+  }, [dispatch, categStatus]);
+
+  function addNewCategory(event) {
+    event.preventDefault();
+    console.log("new category added");
+  }
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox mt={6} mb={3}>
         <Grid container spacing={3} justifyContent="center">
           <Grid item xs={12} lg={8}>
-            <Card>
-              <MDBox p={2}>
-                <MDTypography variant="h5">Alerts</MDTypography>
-              </MDBox>
-              <MDBox pt={2} px={2}>
-                <MDAlert color="primary" dismissible>
-                  {alertContent("primary")}
-                </MDAlert>
-                <MDAlert color="secondary" dismissible>
-                  {alertContent("secondary")}
-                </MDAlert>
-                <MDAlert color="success" dismissible>
-                  {alertContent("success")}
-                </MDAlert>
-                <MDAlert color="error" dismissible>
-                  {alertContent("error")}
-                </MDAlert>
-                <MDAlert color="warning" dismissible>
-                  {alertContent("warning")}
-                </MDAlert>
-                <MDAlert color="info" dismissible>
-                  {alertContent("info")}
-                </MDAlert>
-                <MDAlert color="light" dismissible>
-                  {alertContent("light")}
-                </MDAlert>
-                <MDAlert color="dark" dismissible>
-                  {alertContent("dark")}
-                </MDAlert>
-              </MDBox>
-            </Card>
-          </Grid>
-
-          <Grid item xs={12} lg={8}>
-            <Card>
-              <MDBox p={2} lineHeight={0}>
-                <MDTypography variant="h5">Notifications</MDTypography>
-                <MDTypography variant="button" color="text" fontWeight="regular">
-                  Notifications on this page use Toasts from Bootstrap. Read more details here.
-                </MDTypography>
-              </MDBox>
-              <MDBox p={2}>
-                <Grid container spacing={3}>
-                  <Grid item xs={12} sm={6} lg={3}>
-                    <MDButton variant="gradient" color="success" onClick={openSuccessSB} fullWidth>
-                      success notification
-                    </MDButton>
-                    {renderSuccessSB}
+            <Card style={{ padding: "50px" }}>
+              <form onSubmit={(event) => addNewCategory(event)}>
+                <Grid container spacing={1} justifyContent="center">
+                  <Grid item xs={8}>
+                    <MDInput label="Type here..." fullWidth />
                   </Grid>
-                  <Grid item xs={12} sm={6} lg={3}>
-                    <MDButton variant="gradient" color="info" onClick={openInfoSB} fullWidth>
-                      info notification
+                  <Grid item xs={2}>
+                    <MDButton variant="contained" color="info" type="submit">
+                      Ajouter
                     </MDButton>
-                    {renderInfoSB}
-                  </Grid>
-                  <Grid item xs={12} sm={6} lg={3}>
-                    <MDButton variant="gradient" color="warning" onClick={openWarningSB} fullWidth>
-                      warning notification
-                    </MDButton>
-                    {renderWarningSB}
-                  </Grid>
-                  <Grid item xs={12} sm={6} lg={3}>
-                    <MDButton variant="gradient" color="error" onClick={openErrorSB} fullWidth>
-                      error notification
-                    </MDButton>
-                    {renderErrorSB}
                   </Grid>
                 </Grid>
-              </MDBox>
+              </form>
+              <ProfilesList
+                title="categories"
+                profiles={[
+                  {
+                    displayAvater: false,
+                    name: "Sophie B.",
+                    description: "Hi! I need more information..",
+                    action: {
+                      type: "internal",
+                      route: "/pages/profile/profile-overview",
+                      color: "info",
+                      label: "reply",
+                    },
+                  },
+                ]}
+              />
             </Card>
           </Grid>
         </Grid>
