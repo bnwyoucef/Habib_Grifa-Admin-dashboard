@@ -19,7 +19,11 @@ import MDInput from "components/MDInput";
 import ProfilesList from "examples/Lists/ProfilesList";
 //  redux tools
 import { useSelector, useDispatch } from "react-redux";
-import { selectAllCategories, fetchCategories } from "../../features/category/categorySlice";
+import {
+  selectAllCategories,
+  fetchCategories,
+  createCategory,
+} from "../../features/category/categorySlice";
 
 function Notifications() {
   const [successSB, setSuccessSB] = useState(false);
@@ -103,14 +107,16 @@ function Notifications() {
   const dispatch = useDispatch();
   const categories = useSelector(selectAllCategories);
   const categStatus = useSelector((state) => state.category.status);
+  const [categoryNameInput, setCategoryNameInput] = useState("");
 
   useEffect(() => {
     if (categStatus === "idle") dispatch(fetchCategories());
   }, [dispatch, categStatus]);
 
-  function addNewCategory(event) {
+  function addNewCategory(event, categoryName) {
     event.preventDefault();
     console.log("new category added");
+    dispatch(createCategory(categoryName));
   }
 
   return (
@@ -120,10 +126,15 @@ function Notifications() {
         <Grid container spacing={3} justifyContent="center">
           <Grid item xs={12} lg={8}>
             <Card style={{ padding: "50px" }}>
-              <form onSubmit={(event) => addNewCategory(event)}>
+              <form onSubmit={(event) => addNewCategory(event, categoryNameInput)}>
                 <Grid container spacing={1} justifyContent="center">
                   <Grid item xs={8}>
-                    <MDInput label="Type here..." fullWidth />
+                    <MDInput
+                      label="Type here..."
+                      fullWidth
+                      onChange={(event) => setCategoryNameInput(event.target.value)}
+                      value={categoryNameInput}
+                    />
                   </Grid>
                   <Grid item xs={2}>
                     <MDButton variant="contained" color="info" type="submit">
@@ -132,22 +143,24 @@ function Notifications() {
                   </Grid>
                 </Grid>
               </form>
-              <ProfilesList
-                title="categories"
-                profiles={[
-                  {
-                    displayAvater: false,
-                    name: "Sophie B.",
-                    description: "Hi! I need more information..",
-                    action: {
-                      type: "internal",
-                      route: "/pages/profile/profile-overview",
-                      color: "info",
-                      label: "reply",
-                    },
-                  },
-                ]}
-              />
+              <Grid container justifyContent="center">
+                <Grid item xs={12}>
+                  <ProfilesList
+                    title="categories"
+                    profiles={categories.map((category) => ({
+                      displayAvater: false,
+                      name: category.categoryName,
+                      description: `${category.product.length} produits`,
+                      action: {
+                        type: "internal",
+                        route: "/pages/profile/profile-overview",
+                        color: "info",
+                        label: "reply",
+                      },
+                    }))}
+                  />
+                </Grid>
+              </Grid>
             </Card>
           </Grid>
         </Grid>
