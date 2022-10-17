@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import toast from "react-hot-toast";
 import axios from "../../Api/axios";
 
 const initialState = {
@@ -9,13 +10,11 @@ const initialState = {
 
 export const fetchCategories = createAsyncThunk("category/fetch", async () => {
   const response = await axios.get("category/all");
-  console.log(response.data);
   return response.data;
 });
 
 export const createCategory = createAsyncThunk("category/create", async (name) => {
   const response = await axios.post("category/create", { categoryName: name });
-  console.log("the new: ", name);
   return response.data;
 });
 
@@ -30,7 +29,6 @@ const categorySlice = createSlice({
       })
       .addCase(fetchCategories.fulfilled, (state, action) => {
         state.status = "succeeded";
-        // Add any fetched posts to the array
         state.categories = state.categories.concat(action.payload);
       })
       .addCase(fetchCategories.rejected, (state, action) => {
@@ -42,8 +40,8 @@ const categorySlice = createSlice({
       })
       .addCase(createCategory.fulfilled, (state, action) => {
         state.status = "succeeded";
-        // Add any fetched posts to the array
         state.categories = state.categories.concat(action.payload);
+        toast.success("Catégorie ajoutée avec succès");
       })
       .addCase(createCategory.rejected, (state, action) => {
         state.status = "failed";

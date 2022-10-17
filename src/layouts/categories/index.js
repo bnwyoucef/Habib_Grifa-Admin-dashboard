@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
+import { Toaster } from "react-hot-toast";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -115,12 +116,13 @@ function Notifications() {
 
   function addNewCategory(event, categoryName) {
     event.preventDefault();
-    console.log("new category added");
     dispatch(createCategory(categoryName));
+    setCategoryNameInput("");
   }
 
   return (
     <DashboardLayout>
+      <Toaster />
       <DashboardNavbar />
       <MDBox mt={6} mb={3}>
         <Grid container spacing={3} justifyContent="center">
@@ -130,7 +132,7 @@ function Notifications() {
                 <Grid container spacing={1} justifyContent="center">
                   <Grid item xs={8}>
                     <MDInput
-                      label="Type here..."
+                      label="écrivez ici..."
                       fullWidth
                       onChange={(event) => setCategoryNameInput(event.target.value)}
                       value={categoryNameInput}
@@ -143,24 +145,20 @@ function Notifications() {
                   </Grid>
                 </Grid>
               </form>
-              <Grid container justifyContent="center">
-                <Grid item xs={12}>
-                  <ProfilesList
-                    title="categories"
-                    profiles={categories.map((category) => ({
-                      displayAvater: false,
-                      name: category.categoryName,
-                      description: `${category.product.length} produits`,
-                      action: {
-                        type: "internal",
-                        route: "/pages/profile/profile-overview",
-                        color: "info",
-                        label: "reply",
-                      },
-                    }))}
-                  />
-                </Grid>
-              </Grid>
+              <ProfilesList
+                title="catégories"
+                profiles={categories.map((category) => ({
+                  displayAvater: false,
+                  name: category.categoryName,
+                  description: `${category.product.length} produits`,
+                  action: {
+                    type: "internal",
+                    route: "/pages/profile/profile-overview",
+                    color: "info",
+                    label: "reply",
+                  },
+                }))}
+              />
             </Card>
           </Grid>
         </Grid>
