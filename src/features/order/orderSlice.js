@@ -9,20 +9,16 @@ const initialState = {
 
 export const fetchOrders = createAsyncThunk("order/fetchOrders", async () => {
   const response = await axios.get("order/orders");
-  console.log(response.data);
   return response.data;
 });
 
 export const removeOrder = createAsyncThunk("order/removeOrder", async (orderId) => {
   const response = await axios.delete(`order/delete/${orderId}`);
-  console.log(response.data);
   return response.data;
 });
 
 export const confirmOrder = createAsyncThunk("order/confirmOrder", async (orderId) => {
-  console.log("confirm order", orderId);
   const response = await axios.patch(`order/update/${orderId}`);
-  console.log(response.data);
   return response.data;
 });
 

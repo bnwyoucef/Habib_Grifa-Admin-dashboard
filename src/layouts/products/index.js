@@ -8,57 +8,96 @@ import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import MasterCard from "examples/Cards/MasterCard";
-import DefaultInfoCard from "examples/Cards/InfoCards/DefaultInfoCard";
 
-// Billing page components
-import PaymentMethod from "layouts/products/components/PaymentMethod";
-import Invoices from "layouts/products/components/Invoices";
-import BillingInformation from "layouts/products/components/BillingInformation";
 import Transactions from "layouts/products/components/Transactions";
+import DataTable from "examples/Tables/DataTable";
+import MDTypography from "components/MDTypography";
+import MDButton from "components/MDButton";
+import { Card, Icon } from "@mui/material";
+import MDAvatar from "components/MDAvatar";
+import { useEffect } from "react";
+//  redux functionality
+import { useSelector, useDispatch } from "react-redux";
+import { fetchProducts, getAllProducts } from "../../features/product/productSlice";
 
 function Billing() {
+  const dispatch = useDispatch();
+  const productsList = useSelector(getAllProducts);
+  const productStatus = useSelector((state) => state.product.status);
+
+  useEffect(() => {
+    if (productStatus === "idle") dispatch(fetchProducts());
+  }, [productStatus, dispatch]);
+
+  const columns = [
+    { Header: "image", accessor: "image", align: "left" },
+    { Header: "produit", accessor: "produit", align: "center" },
+    { Header: "category", accessor: "category", align: "left" },
+    { Header: "prix", accessor: "prix", align: "center" },
+    { Header: "nombre de commandes", accessor: "nombre_commandes", align: "center" },
+  ];
+
+  const rows = productsList?.map((product) => ({
+    image: (
+      <MDBox display="flex" alignItems="center" lineHeight={1}>
+        <MDAvatar
+          src={`http://localhost:1811/product/image/${product.images.split(",")[0]}`}
+          name={product.name}
+          size="xl"
+          style={{ cursor: "pointer" }}
+        />
+      </MDBox>
+    ),
+    produit: (
+      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        {product.name}
+      </MDTypography>
+    ),
+    category: (
+      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        {product.category.categoryName}
+      </MDTypography>
+    ),
+    prix: (
+      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        {`${product.price}DA`}
+      </MDTypography>
+    ),
+    nombre_commandes: (
+      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        {product.Order?.length}
+      </MDTypography>
+    ),
+    remove: (
+      <MDButton
+        variant="text"
+        size="large"
+        color="info"
+        // onClick={(e) => removeConfirmedOrder(e, order.id)}
+      >
+        <Icon>delete</Icon>
+      </MDButton>
+    ),
+  }));
+
   return (
     <DashboardLayout>
-      <DashboardNavbar absolute isMini />
+      <DashboardNavbar />
+
       <MDBox mt={8}>
         <MDBox mb={3}>
           <Grid container spacing={3}>
-            <Grid item xs={12} lg={8}>
-              <Grid container spacing={3}>
-                <Grid item xs={12} xl={6}>
-                  <MasterCard number={4562112245947852} holder="jack peterson" expires="11/22" />
-                </Grid>
-                <Grid item xs={12} md={6} xl={3}>
-                  <DefaultInfoCard
-                    icon="account_balance"
-                    title="salary"
-                    description="Belong Interactive"
-                    value="+$2000"
-                  />
-                </Grid>
-                <Grid item xs={12} md={6} xl={3}>
-                  <DefaultInfoCard
-                    icon="paypal"
-                    title="paypal"
-                    description="Freelance Payment"
-                    value="$455.00"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <PaymentMethod />
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid item xs={12} lg={4}>
-              <Invoices />
-            </Grid>
-          </Grid>
-        </MDBox>
-        <MDBox mb={3}>
-          <Grid container spacing={3}>
             <Grid item xs={12} md={7}>
-              <BillingInformation />
+              <DataTable
+                table={{
+                  columns,
+                  rows,
+                }}
+                isSorted={false}
+                entriesPerPage={{ defaultValue: 5, displayEntries: false }}
+                showTotalEntries={false}
+                noEndBorder
+              />
             </Grid>
             <Grid item xs={12} md={5}>
               <Transactions />

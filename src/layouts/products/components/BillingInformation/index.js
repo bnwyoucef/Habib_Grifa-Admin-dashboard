@@ -37,6 +37,19 @@ function BillingInformation() {
             vat="FRB1235476"
             noGutter
           />
+          <Bill
+            name="lucas harper"
+            company="stone tech zone"
+            email="lucas@stone-tech.com"
+            vat="FRB1235476"
+          />
+          <Bill
+            name="ethan james"
+            company="fiber notion"
+            email="ethan@fiber.com"
+            vat="FRB1235476"
+            noGutter
+          />
         </MDBox>
       </MDBox>
     </Card>

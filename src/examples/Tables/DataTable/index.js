@@ -23,6 +23,8 @@ import MDPagination from "components/MDPagination";
 // Material Dashboard 2 React example components
 import DataTableHeadCell from "examples/Tables/DataTable/DataTableHeadCell";
 import DataTableBodyCell from "examples/Tables/DataTable/DataTableBodyCell";
+import MDButton from "components/MDButton";
+import { Divider } from "@mui/material";
 
 function DataTable({
   entriesPerPage,
@@ -132,9 +134,19 @@ function DataTable({
 
   return (
     <TableContainer sx={{ boxShadow: "none" }}>
+      <div style={{ padding: "20px 10px 0px 10px", display: "flex" }}>
+        <MDTypography variant="h4" color="dark">
+          Tous les produits
+        </MDTypography>
+        <div style={{ flex: 1, display: "flex", flexDirection: "row", justifyContent: "flex-end" }}>
+          <MDButton variant="contained" color="info" style={{ marginRight: "10px" }}>
+            Ajouter
+          </MDButton>
+        </div>
+      </div>
       {entriesPerPage || canSearch ? (
-        <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-          {entriesPerPage && (
+        <MDBox display="flex" justifyContent="space-between" alignItems="center" p={1}>
+          {entriesPerPage.displayEntries && (
             <MDBox display="flex" alignItems="center">
               <Autocomplete
                 disableClearable
@@ -204,7 +216,6 @@ function DataTable({
           })}
         </TableBody>
       </Table>
-
       <MDBox
         display="flex"
         flexDirection={{ xs: "column", sm: "row" }}
