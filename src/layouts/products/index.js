@@ -8,6 +8,7 @@ import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
+import MDInput from "components/MDInput";
 
 import Transactions from "layouts/products/components/Transactions";
 import DataTable from "examples/Tables/DataTable";
@@ -15,15 +16,18 @@ import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import { Card, Icon } from "@mui/material";
 import MDAvatar from "components/MDAvatar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 //  redux functionality
 import { useSelector, useDispatch } from "react-redux";
 import { fetchProducts, getAllProducts } from "../../features/product/productSlice";
+
+import Carousel from "./Carousel";
 
 function Billing() {
   const dispatch = useDispatch();
   const productsList = useSelector(getAllProducts);
   const productStatus = useSelector((state) => state.product.status);
+  const [selectedProduct, setSelectedProduct] = useState({});
 
   useEffect(() => {
     if (productStatus === "idle") dispatch(fetchProducts());
@@ -94,13 +98,42 @@ function Billing() {
                   rows,
                 }}
                 isSorted={false}
-                entriesPerPage={{ defaultValue: 5, displayEntries: false }}
+                entriesPerPage={{ defaultValue: 8, displayEntries: false }}
                 showTotalEntries={false}
                 noEndBorder
               />
             </Grid>
             <Grid item xs={12} md={5}>
-              <Transactions />
+              <Card style={{ padding: "20px" }}>
+                <Carousel />
+                <Grid
+                  container
+                  rowSpacing={2}
+                  style={{ backgroundColor: "white" }}
+                  justifyContent="center"
+                >
+                  <Grid item xs={10}>
+                    <MDInput type="text" label="Produit" value="nom du produit" fullWidth />
+                  </Grid>
+                  <Grid item xs={10}>
+                    <MDInput type="text" label="Prix" value="prix en dinar" fullWidth />
+                  </Grid>
+                  <Grid item xs={10}>
+                    <MDInput type="text" label="Catégorie" value="John Smith" fullWidth />
+                  </Grid>
+                  <Grid item xs={10}>
+                    <MDInput type="text" label="Tailles" value="John Smith" fullWidth />
+                  </Grid>
+                  <Grid item xs={10}>
+                    <MDInput label="Type here..." multiline rows={5} fullWidth />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <MDButton variant="contained" color="info" fullWidth>
+                      Modifier produit
+                    </MDButton>
+                  </Grid>
+                </Grid>
+              </Card>
             </Grid>
           </Grid>
         </MDBox>
