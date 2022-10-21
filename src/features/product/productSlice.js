@@ -12,6 +12,23 @@ export const fetchProducts = createAsyncThunk("product/fetch", async () => {
   return response.data;
 });
 
+export const updateSelectedProduct = createAsyncThunk("product/update", async (product) => {
+  console.log("here l79t", product?.productId);
+  console.log("here l79t", product?.updatedProduct);
+  try {
+    const response = await axios.patch(
+      `product/update/${product.productId}`,
+      product.updatedProduct,
+      "efwef"
+    );
+    console.log("result", response?.data);
+    return response.data;
+  } catch (error) {
+    console.log(error.message);
+    return error.message;
+  }
+});
+
 export const productSlice = createSlice({
   name: "product",
   initialState,

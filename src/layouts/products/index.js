@@ -19,9 +19,14 @@ import MDAvatar from "components/MDAvatar";
 import { useEffect, useState } from "react";
 //  redux functionality
 import { useSelector, useDispatch } from "react-redux";
-import { fetchProducts, getAllProducts } from "../../features/product/productSlice";
+import {
+  fetchProducts,
+  getAllProducts,
+  updateSelectedProduct,
+} from "../../features/product/productSlice";
 
 import Carousel from "./Carousel";
+import Select from "./Select";
 
 function Billing() {
   const dispatch = useDispatch();
@@ -29,9 +34,43 @@ function Billing() {
   const productStatus = useSelector((state) => state.product.status);
   const [selectedProduct, setSelectedProduct] = useState({});
 
+  const [updateName, setUpdateName] = useState("");
+  const [updateImages, setUpdateImages] = useState("");
+  const [updatePrice, setUpdatePrice] = useState("");
+  const [updateCategory, setUpdateCategory] = useState("");
+  const [updateSizes, setUpdateSizes] = useState("");
+  const [updateDescription, setUpdateDescription] = useState("");
+
+  function updateHandler(clickedProduct) {
+    setUpdateName(clickedProduct?.name);
+    setUpdateImages(clickedProduct?.images);
+    setUpdatePrice(clickedProduct?.price);
+    setUpdateCategory(clickedProduct?.category.categoryName);
+    setUpdateSizes(clickedProduct?.sizes);
+    setUpdateDescription(clickedProduct?.description);
+    setSelectedProduct(clickedProduct);
+  }
+
+  function updateProduct(event, productId) {
+    event.preventDefault();
+    const updatedProduct = {
+      name: updateName,
+      price: updatePrice,
+      description: updateDescription,
+      sizes: updateSizes,
+      categoryId: "2",
+    };
+    dispatch(updateSelectedProduct({ updatedProduct, productId }));
+  }
+
   useEffect(() => {
     if (productStatus === "idle") dispatch(fetchProducts());
   }, [productStatus, dispatch]);
+
+  useEffect(() => {
+    setSelectedProduct(productsList[0]);
+    updateHandler(productsList[0]);
+  }, [productsList]);
 
   const columns = [
     { Header: "image", accessor: "image", align: "left" },
@@ -39,6 +78,8 @@ function Billing() {
     { Header: "category", accessor: "category", align: "left" },
     { Header: "prix", accessor: "prix", align: "center" },
     { Header: "nombre de commandes", accessor: "nombre_commandes", align: "center" },
+    { Header: "Supprimer", accessor: "remove", align: "center" },
+    { Header: "Modifier", accessor: "update", align: "center" },
   ];
 
   const rows = productsList?.map((product) => ({
@@ -77,9 +118,14 @@ function Billing() {
         variant="text"
         size="large"
         color="info"
-        // onClick={(e) => removeConfirmedOrder(e, order.id)}
+        onClick={() => setSelectedProduct(product)}
       >
         <Icon>delete</Icon>
+      </MDButton>
+    ),
+    update: (
+      <MDButton variant="text" size="large" color="info" onClick={() => updateHandler(product)}>
+        <Icon>edit</Icon>
       </MDButton>
     ),
   }));
@@ -105,30 +151,62 @@ function Billing() {
             </Grid>
             <Grid item xs={12} md={5}>
               <Card style={{ padding: "20px" }}>
-                <Carousel />
                 <Grid
                   container
                   rowSpacing={2}
                   style={{ backgroundColor: "white" }}
                   justifyContent="center"
                 >
-                  <Grid item xs={10}>
-                    <MDInput type="text" label="Produit" value="nom du produit" fullWidth />
+                  <Grid item xs={6}>
+                    <Carousel product={selectedProduct} />
                   </Grid>
                   <Grid item xs={10}>
-                    <MDInput type="text" label="Prix" value="prix en dinar" fullWidth />
+                    <MDInput
+                      type="text"
+                      label="Produit"
+                      value={updateName}
+                      onChange={(e) => setUpdateName(e.target.value)}
+                      fullWidth
+                    />
                   </Grid>
                   <Grid item xs={10}>
-                    <MDInput type="text" label="Catégorie" value="John Smith" fullWidth />
+                    <MDInput
+                      type="text"
+                      label="Prix"
+                      value={updatePrice}
+                      fullWidth
+                      onChange={(e) => setUpdatePrice(e.target.value)}
+                    />
                   </Grid>
                   <Grid item xs={10}>
-                    <MDInput type="text" label="Tailles" value="John Smith" fullWidth />
+                    <Select updateCategory={updateCategory} setUpdateCategory={setUpdateCategory} />
                   </Grid>
                   <Grid item xs={10}>
-                    <MDInput label="Type here..." multiline rows={5} fullWidth />
+                    <MDInput
+                      type="text"
+                      label="Tailles"
+                      value={updateSizes?.toUpperCase()}
+                      fullWidth
+                      onChange={(e) => setUpdateSizes(e.target.value)}
+                    />
+                  </Grid>
+                  <Grid item xs={10}>
+                    <MDInput
+                      label="description"
+                      value={updateDescription}
+                      onChange={(e) => setUpdateDescription(e.target.value)}
+                      multiline
+                      rows={5}
+                      fullWidth
+                    />
                   </Grid>
                   <Grid item xs={6}>
-                    <MDButton variant="contained" color="info" fullWidth>
+                    <MDButton
+                      variant="contained"
+                      color="info"
+                      fullWidth
+                      onClick={(e) => updateProduct(e, selectedProduct.id)}
+                    >
                       Modifier produit
                     </MDButton>
                   </Grid>
