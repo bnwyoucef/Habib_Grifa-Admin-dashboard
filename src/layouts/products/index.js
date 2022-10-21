@@ -40,6 +40,7 @@ function Billing() {
   const [updateCategory, setUpdateCategory] = useState("");
   const [updateSizes, setUpdateSizes] = useState("");
   const [updateDescription, setUpdateDescription] = useState("");
+  const [newCategId, setNewCategId] = useState("");
 
   function updateHandler(clickedProduct) {
     setUpdateName(clickedProduct?.name);
@@ -58,7 +59,7 @@ function Billing() {
       price: updatePrice,
       description: updateDescription,
       sizes: updateSizes,
-      categoryId: "2",
+      categoryId: newCategId,
     };
     dispatch(updateSelectedProduct({ updatedProduct, productId }));
   }
@@ -179,7 +180,11 @@ function Billing() {
                     />
                   </Grid>
                   <Grid item xs={10}>
-                    <Select updateCategory={updateCategory} setUpdateCategory={setUpdateCategory} />
+                    <Select
+                      updateCategory={updateCategory}
+                      setUpdateCategory={setUpdateCategory}
+                      setNewCategId={setNewCategId}
+                    />
                   </Grid>
                   <Grid item xs={10}>
                     <MDInput

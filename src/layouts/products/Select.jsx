@@ -8,7 +8,7 @@ import Select from "@mui/material/Select";
 import { useSelector, useDispatch } from "react-redux";
 import { selectAllCategories, fetchCategories } from "../../features/category/categorySlice";
 
-export default function BasicSelect({ updateCategory, setUpdateCategory }) {
+export default function BasicSelect({ updateCategory, setUpdateCategory, setNewCategId }) {
   const dispatch = useDispatch();
   const categories = useSelector(selectAllCategories);
   const categStatus = useSelector((state) => state.category.status);
@@ -19,6 +19,7 @@ export default function BasicSelect({ updateCategory, setUpdateCategory }) {
 
   const handleChange = (event) => {
     setUpdateCategory(event.target.value);
+    setNewCategId(categories.filter((cat) => cat.categoryName === event.target.value)[0].id);
   };
 
   return (
