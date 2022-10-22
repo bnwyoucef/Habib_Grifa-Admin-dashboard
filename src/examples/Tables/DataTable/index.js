@@ -24,7 +24,7 @@ import MDPagination from "components/MDPagination";
 import DataTableHeadCell from "examples/Tables/DataTable/DataTableHeadCell";
 import DataTableBodyCell from "examples/Tables/DataTable/DataTableBodyCell";
 import MDButton from "components/MDButton";
-import { Divider } from "@mui/material";
+import FormDialog from "../../../layouts/products/AddProductForm";
 
 function DataTable({
   entriesPerPage,
@@ -139,9 +139,10 @@ function DataTable({
           Tous les produits
         </MDTypography>
         <div style={{ flex: 1, display: "flex", flexDirection: "row", justifyContent: "flex-end" }}>
-          <MDButton variant="contained" color="info" style={{ marginRight: "10px" }}>
+          {/* <MDButton variant="contained" color="info" style={{ marginRight: "10px" }}>
             Ajouter
-          </MDButton>
+          </MDButton> */}
+          <FormDialog />
         </div>
       </div>
       {entriesPerPage || canSearch ? (
