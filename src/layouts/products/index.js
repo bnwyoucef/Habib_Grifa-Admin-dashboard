@@ -1,4 +1,5 @@
 // @mui material components
+import React, { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
 
 // Material Dashboard 2 React components
@@ -10,19 +11,19 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import MDInput from "components/MDInput";
 
-import Transactions from "layouts/products/components/Transactions";
 import DataTable from "examples/Tables/DataTable";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import { Card, Icon } from "@mui/material";
 import MDAvatar from "components/MDAvatar";
-import { useEffect, useState } from "react";
 //  redux functionality
 import { useSelector, useDispatch } from "react-redux";
+import toast, { Toaster } from "react-hot-toast";
 import {
   fetchProducts,
   getAllProducts,
   updateSelectedProduct,
+  deleteSelectedProduct,
 } from "../../features/product/productSlice";
 
 import Carousel from "./Carousel";
@@ -73,6 +74,13 @@ function Billing() {
     updateHandler(productsList[0]);
   }, [productsList]);
 
+  function removeProduct(event, productId) {
+    event.preventDefault();
+    dispatch(deleteSelectedProduct(productId)).then(() => {
+      toast.success("produit supprimé avec succès");
+    });
+  }
+
   const columns = [
     { Header: "image", accessor: "image", align: "left" },
     { Header: "produit", accessor: "produit", align: "center" },
@@ -88,7 +96,7 @@ function Billing() {
       <MDBox display="flex" alignItems="center" lineHeight={1}>
         <MDAvatar
           src={`http://localhost:1811/product/image/${product.images.split(",")[0]}`}
-          name={product.name}
+          name={product?.name}
           size="xl"
           style={{ cursor: "pointer" }}
         />
@@ -96,22 +104,22 @@ function Billing() {
     ),
     produit: (
       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-        {product.name}
+        {product?.name}
       </MDTypography>
     ),
     category: (
       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-        {product.category.categoryName}
+        {product?.category?.categoryName}
       </MDTypography>
     ),
     prix: (
       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-        {`${product.price}DA`}
+        {`${product?.price}DA`}
       </MDTypography>
     ),
     nombre_commandes: (
       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-        {product.Order?.length}
+        {product?.Order?.length}
       </MDTypography>
     ),
     remove: (
@@ -119,7 +127,7 @@ function Billing() {
         variant="text"
         size="large"
         color="info"
-        onClick={() => setSelectedProduct(product)}
+        onClick={(event) => removeProduct(event, product.id)}
       >
         <Icon>delete</Icon>
       </MDButton>
@@ -133,12 +141,11 @@ function Billing() {
 
   return (
     <DashboardLayout>
-      <DashboardNavbar />
-
-      <MDBox mt={8}>
+      <Toaster />
+      <MDBox mt={0}>
         <MDBox mb={3}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={7}>
+            <Grid item xs={12} lg={8}>
               <DataTable
                 table={{
                   columns,
@@ -148,9 +155,10 @@ function Billing() {
                 entriesPerPage={{ defaultValue: 8, displayEntries: false }}
                 showTotalEntries={false}
                 noEndBorder
+                diplayAddProductBtn
               />
             </Grid>
-            <Grid item xs={12} md={5}>
+            <Grid item xs={12} lg={4}>
               <Card style={{ padding: "20px" }}>
                 <Grid
                   container
@@ -158,8 +166,10 @@ function Billing() {
                   style={{ backgroundColor: "white" }}
                   justifyContent="center"
                 >
-                  <Grid item xs={6}>
-                    <Carousel product={selectedProduct} />
+                  <Grid item xs={12}>
+                    <div>
+                      <Carousel product={selectedProduct} />
+                    </div>
                   </Grid>
                   <Grid item xs={10}>
                     <MDInput

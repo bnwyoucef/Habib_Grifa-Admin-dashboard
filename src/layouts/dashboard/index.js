@@ -51,11 +51,13 @@ function Dashboard() {
   }, [orderStatus, dispatch]);
 
   function filterOrders(orderList, filterTime, startIndex, endIndex) {
-    return orderList.filter(
-      (order) =>
-        order.createdAt.substring(startIndex, endIndex) ===
-        filterTime.substring(startIndex, endIndex)
-    );
+    return orderList
+      ? orderList?.filter(
+          (order) =>
+            order?.createdAt?.substring(startIndex, endIndex) ===
+            filterTime?.substring(startIndex, endIndex)
+        )
+      : [];
   }
 
   function revenuCalcul(orderList) {

@@ -1,16 +1,19 @@
 import * as React from "react";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import axios from "../../Api/axios";
+import toast, { Toaster } from "react-hot-toast";
 import Select from "./Select";
 import UploadImages from "./UploadMultipleImg";
+import { createProduct } from "../../features/product/productSlice";
 
 export default function FormDialog() {
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [productName,setProductName] = useState('');
   const [productPrice,setProductPrice] = useState('');
@@ -42,7 +45,6 @@ export default function FormDialog() {
     
     imgs.forEach(image=>{
       const x = formData.append("images", image);
-      console.log('xxx',x,formData);
     });
   
     formData.append("name",productName);
@@ -50,77 +52,74 @@ export default function FormDialog() {
     formData.append("description",productDescription);
     formData.append("sizes",productSizes);
     formData.append("categoryId",productCategoryId);
-
-
-    // const newProduct = {name:productName,price:productPrice,description:productDescription,sizes:productSizes,
-    // categoryId:productCategoryId,images:formData1}
-    // console.log(newProduct);
-
-    try {
-      const response = await axios.post("product/create",formData,{
-        headers: { 'Content-Type': 'multipart/form-data'}});
-        console.log(response.data);
-    } catch (error) {
-      console.log(error.message);
-    }
+    dispatch(createProduct(formData)).then( () => toast.success("produit ajouteé avec succès"))
+    .catch((err) => toast.error(err.message))
+    handleClose();
   }
 
   return (
     <div>
+      <Toaster />
       <Button variant="contained" style={{ color: "white" }} onClick={handleClickOpen}>
         Ajouter un produit
       </Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Ajouter un produit</DialogTitle>
         <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Nom du produit"
-            type="email"
-            fullWidth
-            variant="outlined"
-            value={productName}
-            onChange={(event) => setProductName(event.target.value)}
-          />
-          <TextField
-            margin="dense"
-            id="name"
-            label="Prix"
-            type="email"
-            fullWidth
-            variant="outlined"
-            value={productPrice}
-            onChange={(event) => setProductPrice(event.target.value)}
-          />
-          <TextField
-            margin="dense"
-            id="name"
-            label="Tailles"
-            type="email"
-            fullWidth
-            variant="outlined"
-            value={productSizes}
-            onChange={(event) => setProductSizes(event.target.value)}
-          />
-          <TextField
-            margin="dense"
-            id="name"
-            label="Description"
-            type="email"
-            fullWidth
-            variant="outlined"
-            value={productDescription}
-            onChange={(event) => setProductDescription(event.target.value)}
-          />
-          <Select updateCategory={productCategoryName} setUpdateCategory={setProductCategroyName} setNewCategId={setProductCategroyId}/>
-          <UploadImages productImages={productImages} setProductImages={setProductImages} />
+          <form onSubmit={(event) => addNewProduct(event)}>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Nom du produit"
+              type="text"
+              fullWidth
+              required
+              variant="outlined"
+              value={productName}
+              onChange={(event) => setProductName(event.target.value)}
+            />
+            <TextField
+              margin="dense"
+              id="name"
+              label="Prix"
+              type="text"
+              fullWidth
+              required
+              variant="outlined"
+              value={productPrice}
+              onChange={(event) => setProductPrice(event.target.value)}
+            />
+            <TextField
+              margin="dense"
+              id="name"
+              label="Tailles"
+              type="text"
+              fullWidth
+              required
+              variant="outlined"
+              value={productSizes}
+              onChange={(event) => setProductSizes(event.target.value)}
+            />
+            <TextField
+              margin="dense"
+              id="name"
+              label="Description"
+              type="text"
+              fullWidth
+              required
+              variant="outlined"
+              value={productDescription}
+              onChange={(event) => setProductDescription(event.target.value)}
+            />
+            <Select updateCategory={productCategoryName} setUpdateCategory={setProductCategroyName} setNewCategId={setProductCategroyId}/>
+            <UploadImages productImages={productImages} setProductImages={setProductImages} />
+            <DialogActions>
+              <input type="button" onClick={handleClose} value="Annuler"/>
+              <input type="submit" value="Ajouter" />
+            </DialogActions>
+          </form>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Annuler</Button>
-          <Button onClick={(event) => addNewProduct(event)}>Ajouter</Button>
-        </DialogActions>
       </Dialog>
     </div>
   );

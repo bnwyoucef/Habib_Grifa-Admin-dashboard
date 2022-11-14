@@ -32,14 +32,18 @@ export default function data() {
 
   function removeConfirmedOrder(event, orderId) {
     event.preventDefault();
-    dispatch(removeOrder(String(orderId)));
-    toast.success("commande supprimer avec succes");
+    dispatch(removeOrder(String(orderId)))
+      .then(() => toast.success("commande supprimer avec succes"))
+      .catch(() => toast.error("Cela n'a pas fonctionné réessayez"));
   }
 
   function confirmNewOrder(event, orderId) {
     event.preventDefault();
-    dispatch(confirmOrder(String(orderId)));
-    toast.success("commande confirmer avec succes");
+    dispatch(confirmOrder(String(orderId)))
+      .then(() => {
+        toast.success("commande confirmer avec succes");
+      })
+      .catch(() => toast.error("Cela n'a pas fonctionné réessayez"));
   }
 
   const Produit = ({ image, name, description }) => (
@@ -76,12 +80,13 @@ export default function data() {
 
     rows: ordersList
       .filter((order) => !order.confirmedByAdmin)
-      ?.map((order) => ({
+      ?.reverse()
+      .map((order) => ({
         produit: (
           <Produit
             image={`${imageConstLink}/image/${order.productImageName}`}
-            name={order.product.name}
-            description={order.product.description.substring(0, 20)}
+            name={order.product?.name}
+            description={order.product?.description.substring(0, 20)}
           />
         ),
         numéro_de_téléphone: (
@@ -111,7 +116,7 @@ export default function data() {
         ),
         taille: (
           <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            {order.productSize.toUpperCase()}
+            {order.productSize?.toUpperCase()}
           </MDTypography>
         ),
         reçu_de_operation: (
@@ -148,7 +153,8 @@ export default function data() {
 
     rows2: ordersList
       .filter((order) => order.confirmedByAdmin)
-      ?.map((order) => ({
+      ?.reverse()
+      .map((order) => ({
         produit: (
           <Produit
             image={`${imageConstLink}/image/${order.productImageName}`}

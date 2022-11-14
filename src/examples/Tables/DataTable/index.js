@@ -34,6 +34,7 @@ function DataTable({
   pagination,
   isSorted,
   noEndBorder,
+  diplayAddProductBtn = false,
 }) {
   const defaultValue = entriesPerPage.defaultValue ? entriesPerPage.defaultValue : 10;
   const entries = entriesPerPage.entries
@@ -138,12 +139,13 @@ function DataTable({
         <MDTypography variant="h4" color="dark">
           Tous les produits
         </MDTypography>
-        <div style={{ flex: 1, display: "flex", flexDirection: "row", justifyContent: "flex-end" }}>
-          {/* <MDButton variant="contained" color="info" style={{ marginRight: "10px" }}>
-            Ajouter
-          </MDButton> */}
-          <FormDialog />
-        </div>
+        {diplayAddProductBtn && (
+          <div
+            style={{ flex: 1, display: "flex", flexDirection: "row", justifyContent: "flex-end" }}
+          >
+            <FormDialog />
+          </div>
+        )}
       </div>
       {entriesPerPage || canSearch ? (
         <MDBox display="flex" justifyContent="space-between" alignItems="center" p={1}>

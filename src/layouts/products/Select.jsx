@@ -32,6 +32,7 @@ export default function BasicSelect({ updateCategory, setUpdateCategory, setNewC
           id="demo-simple-select"
           value={updateCategory}
           label="Catégorie"
+          required
           onChange={handleChange}
         >
           {categories?.map((categ) => (
