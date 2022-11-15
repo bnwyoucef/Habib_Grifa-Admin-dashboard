@@ -18,8 +18,8 @@ import {
   confirmOrder,
 } from "../../../features/order/orderSlice";
 
+export const imageConstLink = "http://localhost:1811/order";
 export default function data() {
-  const imageConstLink = "http://localhost:1811/order";
   const ordersList = useSelector(selectAllOrders);
   const dispatch = useDispatch();
   const orderStatus = useSelector((state) => state.order.status);
@@ -66,6 +66,7 @@ export default function data() {
   );
 
   return {
+    confirmedOrders: ordersList.filter((order) => order.confirmedByAdmin)?.reverse(),
     columns: [
       { Header: "produit", accessor: "produit", align: "center" },
       { Header: "Client", accessor: "client", align: "left" },
@@ -130,6 +131,7 @@ export default function data() {
         ),
         confirmé: (
           <MDButton
+            className="md-button"
             variant="outlined"
             size="small"
             color="info"
@@ -208,7 +210,7 @@ export default function data() {
             color="info"
             onClick={(e) => removeConfirmedOrder(e, order.id)}
           >
-            <Icon>delete</Icon>
+            <Icon className="delete-icon">delete</Icon>
           </MDButton>
         ),
       })),

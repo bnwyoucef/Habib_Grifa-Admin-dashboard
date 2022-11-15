@@ -60,7 +60,7 @@ export default function FormDialog() {
   return (
     <div>
       <Toaster />
-      <Button variant="contained" style={{ color: "white" }} onClick={handleClickOpen}>
+      <Button className="md-button" variant="contained" style={{ color: "white" }} onClick={handleClickOpen}>
         Ajouter un produit
       </Button>
       <Dialog open={open} onClose={handleClose}>

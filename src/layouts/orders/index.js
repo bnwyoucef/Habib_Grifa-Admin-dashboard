@@ -16,12 +16,56 @@ import DataTable from "examples/Tables/DataTable";
 import nonConfirmedOrdersData from "layouts/orders/data/authorsTableData";
 import MDButton from "components/MDButton";
 
+import "./printer.css";
+import React, { useRef } from "react";
+import { useReactToPrint } from "react-to-print";
+import { imageConstLink } from "./data/authorsTableData";
+
 function Tables() {
-  const { columns, rows, columns2, rows2 } = nonConfirmedOrdersData("confirmed");
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+
+  const { columns, rows, columns2, rows2, confirmedOrders } = nonConfirmedOrdersData("confirmed");
 
   return (
     <DashboardLayout>
       <DashboardNavbar />
+      <div style={{ display: "none" }}>
+        <div ref={componentRef} className="order-list">
+          <div className="paper-header">
+            <h2>Habib Grifa babat zawali</h2>
+            <h4>Liste de commandes</h4>
+          </div>
+          {confirmedOrders.map((order) => (
+            <>
+              <div className="page-break" />
+              <div key={order.id} className="single-order">
+                <img src={`${imageConstLink}/image/${order.productImageName}`} alt="test" />
+                <div className="clientInformation">
+                  <p>
+                    <span>Nom du client:</span>
+                    {order.clientName}
+                  </p>
+                  <p>
+                    <span>Numéro de téléphone:</span>
+                    {order.clientPhoneNumber}
+                  </p>
+                  <p>
+                    <span>Wilaya:</span>
+                    {order.clientWilaya}
+                  </p>
+                  <p>
+                    <span>Taille:</span>
+                    {order.productSize}
+                  </p>
+                </div>
+              </div>
+            </>
+          ))}
+        </div>
+      </div>
       <MDBox pt={6} pb={3}>
         <Grid container spacing={6}>
           <Grid item xs={12}>
@@ -70,7 +114,12 @@ function Tables() {
                 <MDTypography variant="h6" color="white" style={{ flex: 1 }}>
                   Commandes confirmées
                 </MDTypography>
-                <MDButton variant="contained" color="info">
+                <MDButton
+                  variant="contained"
+                  color="info"
+                  onClick={handlePrint}
+                  className="md-button"
+                >
                   Imprimer
                 </MDButton>
               </MDBox>

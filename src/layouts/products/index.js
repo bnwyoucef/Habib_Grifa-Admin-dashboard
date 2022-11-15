@@ -124,6 +124,7 @@ function Billing() {
     ),
     remove: (
       <MDButton
+        className="md-button"
         variant="text"
         size="large"
         color="info"
@@ -133,7 +134,13 @@ function Billing() {
       </MDButton>
     ),
     update: (
-      <MDButton variant="text" size="large" color="info" onClick={() => updateHandler(product)}>
+      <MDButton
+        className="md-button"
+        variant="text"
+        size="large"
+        color="info"
+        onClick={() => updateHandler(product)}
+      >
         <Icon>edit</Icon>
       </MDButton>
     ),
@@ -217,6 +224,7 @@ function Billing() {
                   </Grid>
                   <Grid item xs={6}>
                     <MDButton
+                      className="md-button"
                       variant="contained"
                       color="info"
                       fullWidth
