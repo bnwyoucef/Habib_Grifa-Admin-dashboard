@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -11,9 +11,11 @@ import toast, { Toaster } from "react-hot-toast";
 import Select from "./Select";
 import UploadImages from "./UploadMultipleImg";
 import { createProduct } from "../../features/product/productSlice";
+import Loading from "../../components/Loading/index";
 
 export default function FormDialog() {
   const dispatch = useDispatch();
+  const status = useSelector(state => state.product.status);
   const [open, setOpen] = useState(false);
   const [productName,setProductName] = useState('');
   const [productPrice,setProductPrice] = useState('');
@@ -37,14 +39,13 @@ export default function FormDialog() {
     const imgs = [];
     const formData = new FormData();
 
-    console.log('all images:',productImages);
-
+    
     for(let i = 0;i < productImages.length;i+=1) {
       imgs.push(productImages[i]);
     }
     
     imgs.forEach(image=>{
-      const x = formData.append("images", image);
+      formData.append("images", image);
     });
   
     formData.append("name",productName);
@@ -52,9 +53,12 @@ export default function FormDialog() {
     formData.append("description",productDescription);
     formData.append("sizes",productSizes);
     formData.append("categoryId",productCategoryId);
-    dispatch(createProduct(formData)).then( () => toast.success("produit ajouteé avec succès"))
+    dispatch(createProduct(formData)).then( () => {
+      handleClose();
+      toast.success("produit ajouteé avec succès")})
+    
     .catch((err) => toast.error(err.message))
-    handleClose();
+
   }
 
   return (
@@ -63,9 +67,9 @@ export default function FormDialog() {
       <Button className="md-button" variant="contained" style={{ color: "white" }} onClick={handleClickOpen}>
         Ajouter un produit
       </Button>
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={open} onClose={handleClose} >
         <DialogTitle>Ajouter un produit</DialogTitle>
-        <DialogContent>
+        <DialogContent style={{position: "relative"}}>
           <form onSubmit={(event) => addNewProduct(event)}>
             <TextField
               autoFocus

@@ -76,9 +76,9 @@ function Tables() {
                 py={3}
                 px={2}
                 variant="gradient"
-                bgColor="success"
+                bgColor="dark"
                 borderRadius="lg"
-                coloredShadow="info"
+                coloredShadow="dark"
               >
                 <MDTypography variant="h6" color="white">
                   Nouvelles commandes
@@ -106,9 +106,9 @@ function Tables() {
                 py={3}
                 px={2}
                 variant="gradient"
-                bgColor="success"
+                bgColor="dark"
                 borderRadius="lg"
-                coloredShadow="info"
+                coloredShadow="dark"
                 style={{ display: "flex" }}
               >
                 <MDTypography variant="h6" color="white" style={{ flex: 1 }}>

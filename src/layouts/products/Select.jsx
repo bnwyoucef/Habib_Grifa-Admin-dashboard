@@ -13,6 +13,7 @@ export default function BasicSelect({ updateCategory, setUpdateCategory, setNewC
   const categories = useSelector(selectAllCategories);
   const categStatus = useSelector((state) => state.category.status);
 
+
   React.useEffect(() => {
     if (categStatus === "idle") dispatch(fetchCategories());
   }, [dispatch, categStatus]);
@@ -36,7 +37,7 @@ export default function BasicSelect({ updateCategory, setUpdateCategory, setNewC
           onChange={handleChange}
         >
           {categories?.map((categ) => (
-            <MenuItem value={categ?.categoryName}>{categ.categoryName}</MenuItem>
+            <MenuItem key={categ.id} value={categ?.categoryName}>{categ.categoryName}</MenuItem>
           ))}
         </Select>
       </FormControl>

@@ -1,6 +1,9 @@
-.md-button {
-    background-color: red!important;
+/* .md-button {
+    background: linear-gradient(195deg, #EF5350, #E53935)!important;
+}
+.md-button:hover {
+    box-shadow: inset 0px 5px 1px red;
 }
 .delete-icon {
-    color: red;
-}
+    color: #E53935!important;
+} */

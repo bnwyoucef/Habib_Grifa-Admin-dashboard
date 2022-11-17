@@ -19,6 +19,7 @@ import MDAvatar from "components/MDAvatar";
 //  redux functionality
 import { useSelector, useDispatch } from "react-redux";
 import toast, { Toaster } from "react-hot-toast";
+import Loading from "../../components/Loading/index";
 import {
   fetchProducts,
   getAllProducts,
@@ -47,7 +48,7 @@ function Billing() {
     setUpdateName(clickedProduct?.name);
     setUpdateImages(clickedProduct?.images);
     setUpdatePrice(clickedProduct?.price);
-    setUpdateCategory(clickedProduct?.category.categoryName);
+    setUpdateCategory(clickedProduct?.category?.categoryName);
     setUpdateSizes(clickedProduct?.sizes);
     setUpdateDescription(clickedProduct?.description);
     setSelectedProduct(clickedProduct);
@@ -95,7 +96,7 @@ function Billing() {
     image: (
       <MDBox display="flex" alignItems="center" lineHeight={1}>
         <MDAvatar
-          src={`http://localhost:1811/product/image/${product.images.split(",")[0]}`}
+          src={`http://localhost:1811/product/image/${product?.images?.split(",")[0]}`}
           name={product?.name}
           size="xl"
           style={{ cursor: "pointer" }}
@@ -124,24 +125,17 @@ function Billing() {
     ),
     remove: (
       <MDButton
-        className="md-button"
         variant="text"
         size="large"
         color="info"
         onClick={(event) => removeProduct(event, product.id)}
       >
-        <Icon>delete</Icon>
+        <Icon className="delete-icon">delete</Icon>
       </MDButton>
     ),
     update: (
-      <MDButton
-        className="md-button"
-        variant="text"
-        size="large"
-        color="info"
-        onClick={() => updateHandler(product)}
-      >
-        <Icon>edit</Icon>
+      <MDButton variant="text" size="large" color="info" onClick={() => updateHandler(product)}>
+        <Icon className="delete-icon">edit</Icon>
       </MDButton>
     ),
   }));
@@ -149,6 +143,7 @@ function Billing() {
   return (
     <DashboardLayout>
       <Toaster />
+      {productStatus === "loading" && <Loading />}
       <MDBox mt={0}>
         <MDBox mb={3}>
           <Grid container spacing={3}>
@@ -167,12 +162,7 @@ function Billing() {
             </Grid>
             <Grid item xs={12} lg={4}>
               <Card style={{ padding: "20px" }}>
-                <Grid
-                  container
-                  rowSpacing={2}
-                  style={{ backgroundColor: "white" }}
-                  justifyContent="center"
-                >
+                <Grid container rowSpacing={2} justifyContent="center">
                   <Grid item xs={12}>
                     <div>
                       <Carousel product={selectedProduct} />

@@ -12,6 +12,9 @@ export const fetchProducts = createAsyncThunk("product/fetch", async () => {
   return response.data;
 });
 export const createProduct = createAsyncThunk("product/create", async (formData) => {
+  setTimeout(() => {
+    console.log("delay ow sayi");
+  }, [5000]);
   const response = await axios.post("product/create", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
@@ -33,8 +36,7 @@ export const updateSelectedProduct = createAsyncThunk("product/update", async (p
   try {
     const response = await axios.patch(
       `product/update/${product.productId}`,
-      product.updatedProduct,
-      "efwef"
+      product.updatedProduct
     );
     return response.data;
   } catch (error) {
@@ -77,7 +79,9 @@ export const productSlice = createSlice({
       })
       .addCase(updateSelectedProduct.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.products = state.products.concat(action.payload).reverse();
+        state.products = state.products.map((product) =>
+          product.id === action.payload.id ? action.payload : product
+        );
       })
       .addCase(updateSelectedProduct.rejected, (state, action) => {
         state.status = "failed";

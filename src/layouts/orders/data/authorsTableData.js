@@ -23,7 +23,7 @@ export default function data() {
   const ordersList = useSelector(selectAllOrders);
   const dispatch = useDispatch();
   const orderStatus = useSelector((state) => state.order.status);
-
+  console.log(`${imageConstLink}/image/${ordersList[0].productImageName}`);
   useEffect(() => {
     if (orderStatus === "idle") {
       dispatch(fetchOrders());
@@ -126,7 +126,9 @@ export default function data() {
             name={order.paymentCheckImage}
             size="xl"
             style={{ cursor: "pointer" }}
-            onClick={() => window.open(`${imageConstLink}/imagePayed/${order.paymentCheckImage}`)}
+            onClick={() =>
+              window.open(`${imageConstLink}/imagePayed/${order.paymentCheckImage}`, "_blank")
+            }
           />
         ),
         confirmé: (
