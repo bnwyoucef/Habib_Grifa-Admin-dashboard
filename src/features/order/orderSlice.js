@@ -9,7 +9,6 @@ const initialState = {
 
 export const fetchOrders = createAsyncThunk("order/fetchOrders", async () => {
   const response = await axios.get("order/orders");
-  console.log(response.data);
   return response.data;
 });
 
@@ -26,7 +25,11 @@ export const confirmOrder = createAsyncThunk("order/confirmOrder", async (orderI
 export const orderSlice = createSlice({
   name: "order",
   initialState,
-  reducers: {},
+  reducers: {
+    addOrder: (state, action) => {
+      state.orders.push(action.payload);
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(fetchOrders.pending, (state) => {
@@ -69,5 +72,6 @@ export const orderSlice = createSlice({
   },
 });
 
+export const { addOrder } = orderSlice.actions;
 export const selectAllOrders = (state) => state.order.orders;
 export default orderSlice.reducer;

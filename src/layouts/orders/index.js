@@ -39,7 +39,7 @@ function Tables() {
             <h4>Liste de commandes</h4>
           </div>
           {confirmedOrders.map((order) => (
-            <>
+            <div key={order.id}>
               <div className="page-break" />
               <div key={order.id} className="single-order">
                 <img src={`${imageConstLink}/image/${order.productImageName}`} alt="test" />
@@ -62,7 +62,7 @@ function Tables() {
                   </p>
                 </div>
               </div>
-            </>
+            </div>
           ))}
         </div>
       </div>

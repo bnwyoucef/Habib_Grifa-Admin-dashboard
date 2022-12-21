@@ -8,13 +8,17 @@ import { MaterialUIControllerProvider } from "context";
 import { Provider } from "react-redux";
 import store from "./app/store";
 
+import { socket, WebsocketProvider } from "./context/webSocketContext";
+
 ReactDOM.render(
   <BrowserRouter>
-    <MaterialUIControllerProvider>
-      <Provider store={store}>
-        <App />
-      </Provider>
-    </MaterialUIControllerProvider>
+    <WebsocketProvider value={socket}>
+      <MaterialUIControllerProvider>
+        <Provider store={store}>
+          <App />
+        </Provider>
+      </MaterialUIControllerProvider>
+    </WebsocketProvider>
   </BrowserRouter>,
   document.getElementById("root")
 );

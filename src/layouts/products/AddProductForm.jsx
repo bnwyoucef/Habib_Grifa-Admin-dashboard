@@ -55,9 +55,14 @@ export default function FormDialog() {
     formData.append("categoryId",productCategoryId);
     dispatch(createProduct(formData)).then( () => {
       handleClose();
+      setProductName('');
+      setProductPrice('');
+      setProductSizes('');
+      setProductDescription('');
+      setProductCategroyId('');
+      setProductImages('');
       toast.success("produit ajouteé avec succès")})
-    
-    .catch((err) => toast.error(err.message))
+      .catch((err) => toast.error(err.message))
 
   }
 

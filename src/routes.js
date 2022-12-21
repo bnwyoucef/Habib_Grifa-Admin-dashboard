@@ -63,14 +63,6 @@ const routes = [
     route: "/notifications",
     component: <Notifications />,
   },
-  {
-    type: "collapse",
-    name: "Messages",
-    key: "profile",
-    icon: <Icon fontSize="small">mail</Icon>,
-    route: "/profile",
-    component: <Profile />,
-  },
 ];
 
 export default routes;

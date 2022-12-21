@@ -10,20 +10,33 @@ import Icon from "@mui/material/Icon";
 import toast, { Toaster } from "react-hot-toast";
 
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import {
   selectAllOrders,
   fetchOrders,
   removeOrder,
   confirmOrder,
+  addOrder,
 } from "../../../features/order/orderSlice";
+import { WebsocketContext } from "../../../context/webSocketContext";
 
 export const imageConstLink = "http://localhost:1811/order";
+
 export default function data() {
   const ordersList = useSelector(selectAllOrders);
   const dispatch = useDispatch();
   const orderStatus = useSelector((state) => state.order.status);
-  console.log(`${imageConstLink}/image/${ordersList[0].productImageName}`);
+
+  const socket = useContext(WebsocketContext);
+  useEffect(() => {
+    if (orderStatus === "succeeded") {
+      socket.on("order-added", (order) => {
+        console.log(order);
+        dispatch(addOrder(order));
+      });
+    }
+  });
+
   useEffect(() => {
     if (orderStatus === "idle") {
       dispatch(fetchOrders());
@@ -46,7 +59,7 @@ export default function data() {
       .catch(() => toast.error("Cela n'a pas fonctionné réessayez"));
   }
 
-  const Produit = ({ image, name, description }) => (
+  const Produit = ({ image, name }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <Toaster />
       <MDAvatar
@@ -57,10 +70,9 @@ export default function data() {
         onClick={() => window.open(image)}
       />
       <MDBox ml={2} lineHeight={1}>
-        <MDTypography display="block" variant="button" fontWeight="medium">
+        <MDTypography display="block" variant="button" fontWeight="medium" width="100px">
           {name}
         </MDTypography>
-        <MDTypography variant="caption">{description}</MDTypography>
       </MDBox>
     </MDBox>
   );
@@ -86,8 +98,7 @@ export default function data() {
         produit: (
           <Produit
             image={`${imageConstLink}/image/${order.productImageName}`}
-            name={order.product?.name}
-            description={order.product?.description.substring(0, 20)}
+            name={order?.productName.substring(0, 20)}
           />
         ),
         numéro_de_téléphone: (
@@ -162,23 +173,22 @@ export default function data() {
         produit: (
           <Produit
             image={`${imageConstLink}/image/${order.productImageName}`}
-            name={order.product.name}
-            description={order.product.description.substring(0, 20)}
+            name={order?.productName.substring(0, 20)}
           />
         ),
         numéro_de_téléphone: (
           <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            {order.clientPhoneNumber}
+            {order?.clientPhoneNumber}
           </MDTypography>
         ),
         wilaya: (
           <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            {order.clientWilaya}
+            {order?.clientWilaya}
           </MDTypography>
         ),
         client: (
           <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            {order.clientName}
+            {order?.clientName}
           </MDTypography>
         ),
         quantité: (
